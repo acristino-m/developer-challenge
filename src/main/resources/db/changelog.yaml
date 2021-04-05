@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: changelog/v000-create-tweets-entity-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelog/v001-create-hashtags-entity-table.yaml
+      relativeToChangelogFile: true

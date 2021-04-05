@@ -1,0 +1,80 @@
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types:
+      - application/json
+      - application/xml
+      - text/xml
+      - text/css
+      - text/plain
+  http2:
+    enabled: true
+  servlet:
+    context-path: ${CONTEXT_PATH:}
+  shutdown: graceful
+
+management:
+  endpoint.health.probes.enabled: true
+  endpoints:
+    enabled-by-default: ${MANAGEMENT_ENDPOINTS_ENABLED:true}
+    web.exposure.include: '*'
+  server.port: ${MANAGEMENT_PORT:-1}
+
+spring:
+  application:
+    name: challenge
+  lifecycle.timeout-per-shutdown-phase: ${LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE:20s}
+  datasource:
+    initialization-mode: never
+    continue-on-error: false
+    url: ${DATABASE_URL:jdbc:h2:mem:challenge;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;}
+    username: ${DATABASE_USER:sa}
+    password: ${DATABASE_PSW:}
+    hikari:
+      minimum-idle: ${DATABASE_MIN_IDLE:5}
+      maximum-pool-size: ${DATABASE_MAX_IDLE:20}
+      connection-timeout: ${DATABASE_CONNECTION_TIMEOUT:20000}
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog.yaml
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      generate-ddl: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        generate_statistics: ${HIBERNATE_GENERATE_STATISTICS:false}
+        jdbc.lob.non_contextual_creation: true
+        # batch
+        jdbc.batch_size: ${HIBERNATE_BATCH_SIZE:10}
+        order_inserts: ${HIBERNATE_ORDER_INSERTS:true}
+  sleuth:
+    log.slf4j.enabled: true
+
+springdoc:
+  api-docs:
+    path: /openapi/api-docs
+    enabled: ${OPENAPI_ENABLED:true}
+  swagger-ui:
+    path: /openapi/ui
+    enabled: ${OPENAPI_ENABLED:true}
+
+logging:
+  pattern.console: '%d{yyyy/MM/dd HH:mm:ss.SSS} [%-5level] %c{1} - [%X{X-B3-TraceId},%X{X-B3-SpanId}] - %msg%n'
+  level:
+    root: info
+    com.minsait.challenge.twitter: debug
+
+application:
+  twitter:
+    stream:
+      enabled: ${TWITTER_STREAM_ENABLED:true}
+  followers: ${APPLICATION_FOLLOWERS:1500}
+  languages: ${APPLICATION_LANGUAGES:es,fr,it}
+  openapi:
+    title: Developer Challenge
+    description: '@project.description@'
+    version: '@project.version@'
+    server: "http://localhost:${server.port}"

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  challenge:
+    image: minsait/developer-challenge
+    build:
+      context: ./target/docker
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: jdbc:h2:mem:challenge;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
+      DATABASE_USER: sa
+      DATABASE_PSW: ''
+      APPLICATION_FOLLOWERS: 1500
+      APPLICATION_LANGUAGES: es,fr,it
+      twitter4j.debug: 'true'
+      twitter4j.oauth.consumerKey: TO_BE_DEFINED
+      twitter4j.oauth.consumerSecret: TO_BE_DEFINED
+      twitter4j.oauth.accessToken: TO_BE_DEFINED
+      twitter4j.oauth.accessTokenSecret: TO_BE_DEFINED
+    ports:
+      - 8080:8080
+    networks:
+      service:
+
+networks:
+  service:
